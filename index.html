@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Выкуп Mazda — рассылка</title>
+<style>
+  :root{
+    --bg:#f4f4f6; --card:#fff; --text:#16171a; --muted:#6b6e76; --line:#e3e4e8;
+    --accent:#c8182a; --accent-ink:#fff; --wa:#1faa59; --chip:#ececf0;
+    --ok:#1f8a4c; --warn:#b7791f; --bad:#9aa0a6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e0f12; --card:#17181c; --text:#eceef2; --muted:#9a9ea8; --line:#2a2c32;
+      --chip:#23252b; --bad:#6b7078; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:16px}
+  h1{font-size:22px;margin:8px 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+  button,select,input,textarea{font:inherit;color:inherit}
+  .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:600;cursor:pointer;
+    background:var(--chip);display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--text)}
+  .btn.primary{background:var(--accent);color:var(--accent-ink)}
+  .btn.wa{background:var(--wa);color:#fff}
+  .btn:active{transform:scale(.98)}
+  /* login */
+  #login{max-width:380px;margin:18vh auto 0;padding:0 16px}
+  #login input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--card);margin:12px 0}
+  #login .btn{width:100%}
+  #loginErr{color:var(--accent);min-height:22px;font-size:14px}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+  .stat b{display:block;font-size:24px;line-height:1.1}
+  .stat span{color:var(--muted);font-size:13px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;
+    white-space:nowrap;cursor:pointer;font-size:14px}
+  .chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .search{flex:1;min-width:180px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+  select.f{padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--card)}
+  /* cards */
+  .group-title{margin:22px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;
+    border-left:5px solid var(--line)}
+  .card[data-st="Отправлено"]{border-left-color:var(--warn)}
+  .card[data-st="Ответил — интересно"],.card[data-st="Осмотр назначен"]{border-left-color:var(--wa)}
+  .card[data-st="Выкуплено"]{border-left-color:var(--ok)}
+  .card[data-st="Отказ"],.card[data-st="Не актуально"],.card[data-st="Нет WhatsApp"],.card[data-st="Год не подходит"]{border-left-color:var(--bad);opacity:.75}
+  .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .name{font-weight:700;font-size:17px}
+  .meta{color:var(--muted);font-size:14px}
+  .todo{font-size:14px;margin:6px 0 8px;padding:6px 10px;background:var(--chip);border-radius:10px;display:inline-block}
+  .badge{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--chip);white-space:nowrap}
+  textarea{width:100%;min-height:92px;border:1px solid var(--line);border-radius:12px;padding:10px;background:transparent;resize:vertical;font-size:15px}
+  details summary{cursor:pointer;color:var(--muted);font-size:14px;margin:4px 0}
+  .actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  .row2 select,.row2 input{width:100%;padding:10px;border-radius:12px;border:1px solid var(--line);background:transparent}
+  .when{color:var(--muted);font-size:13px;margin-top:6px}
+  .foot{margin:28px 0 40px;display:flex;flex-wrap:wrap;gap:8px}
+  .hint{color:var(--muted);font-size:13px;margin-top:8px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--text);color:var(--bg);
+    padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+  @media (max-width:520px){ .row2{grid-template-columns:1fr} .wrap{padding:12px} }
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>Выкуп Mazda</h1>
+  <p class="sub">Введите пароль, чтобы открыть список клиентов.</p>
+  <form id="loginForm">
+    <input id="pw" type="password" autocomplete="current-password" placeholder="Пароль" required>
+    <button class="btn primary" type="submit">Открыть</button>
+  </form>
+  <div id="loginErr"></div>
+</div>
+
+<div id="app" class="wrap hidden">
+  <h1>Выкуп Mazda — рассылка</h1>
+  <p class="sub">Нажмите «WhatsApp» — откроется чат с готовым текстом, проверьте и отправьте. Затем выберите результат.
+    Не больше 20–30 сообщений в день.</p>
+
+  <div class="stats" id="stats"></div>
+  <div class="chips" id="groups"></div>
+  <div class="toolbar">
+    <input class="search" id="q" placeholder="Поиск: имя, модель, телефон">
+    <select class="f" id="stFilter"></select>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="foot">
+    <button class="btn primary" id="reportWa">Отправить отчёт в WhatsApp</button>
+    <button class="btn" id="reportCopy">Скопировать отчёт</button>
+    <button class="btn" id="csv">Скачать таблицу (CSV)</button>
+    <button class="btn" id="backup">Скачать файл статусов</button>
+    <label class="btn">Загрузить файл статусов<input type="file" id="restore" accept=".json" hidden></label>
+  </div>
+  <p class="hint">Статусы хранятся в этом браузере на этом устройстве. Чтобы передать результат: «Отправить отчёт в WhatsApp»
+    или «Скачать файл статусов» → отправить файл → на другом устройстве «Загрузить файл статусов».</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATUSES = ['','Отправлено','Не дозвонился','Ответил — интересно','Осмотр назначен','Выкуплено','Отказ','Не актуально','Год не подходит','Нет WhatsApp'];
+const LABEL = s => s || 'Не начато';
+const KEY = 'mazda-vykup-v1';
+let clients = [], state = {}, group = 0;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){ const el=$('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2200); }
+
+function load(){ try{ state = JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){ state = {}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ toast('Не удалось сохранить в браузере — скачайте файл статусов'); } }
+const st = id => (state[id] ||= {});
+const fmt = iso => iso ? new Date(iso).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+
+/* ---------- расшифровка ---------- */
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decrypt(pw){
+  const enc = await (await fetch('data.enc.json', {cache:'no-store'})).json();
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:b64(enc.salt), iterations:enc.iter, hash:'SHA-256'},
+    base, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(enc.iv)}, key, b64(enc.data));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+async function unlock(pw){
+  $('loginErr').textContent = 'Открываю…';
+  try{
+    clients = await decrypt(pw);
+    try{ sessionStorage.setItem('mv-pw', pw); }catch(e){}
+    $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+    load(); initUI(); render();
+  }catch(e){ $('loginErr').textContent = 'Неверный пароль'; try{ sessionStorage.removeItem('mv-pw'); }catch(_){} }
+}
+$('loginForm').onsubmit = e => { e.preventDefault(); unlock($('pw').value.trim()); };
+try{ const saved = sessionStorage.getItem('mv-pw'); if(saved) unlock(saved); }catch(e){}
+
+/* ---------- интерфейс ---------- */
+function initUI(){
+  $('stFilter').innerHTML = '<option value="*">Все результаты</option>' + STATUSES.map(s=>`<option value="${esc(s)}">${esc(LABEL(s))}</option>`).join('');
+  $('q').oninput = render; $('stFilter').onchange = render;
+}
+function textOf(c){ return st(c.id).text ?? c.text; }
+
+function render(){
+  // статистика
+  const cnt = s => clients.filter(c => (st(c.id).status||'') === s).length;
+  const touched = clients.filter(c => st(c.id).status).length;
+  $('stats').innerHTML = [
+    [clients.length,'всего'],[touched,'обработано'],[cnt('Ответил — интересно')+cnt('Осмотр назначен'),'интерес / осмотр'],
+    [cnt('Выкуплено'),'выкуплено'],[cnt('Отказ')+cnt('Не актуально')+cnt('Год не подходит'),'отказ']
+  ].map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('');
+
+  // группы
+  const names = {0:'Все'}; clients.forEach(c => names[c.group] = c.groupName);
+  $('groups').innerHTML = Object.keys(names).map(Number).sort().map(g =>
+    `<button class="chip ${g===group?'on':''}" data-g="${g}">${esc(names[g])} · ${g? clients.filter(c=>c.group===g).length : clients.length}</button>`).join('');
+  $('groups').querySelectorAll('.chip').forEach(b => b.onclick = () => { group = +b.dataset.g; render(); });
+
+  // список
+  const q = $('q').value.trim().toLowerCase(), sf = $('stFilter').value;
+  const vis = clients.filter(c => (!group || c.group===group)
+    && (sf==='*' || (st(c.id).status||'')===sf)
+    && (!q || [c.fio,c.model,c.phone,c.year].join(' ').toLowerCase().includes(q)));
+  let html = '', last = null;
+  for(const c of vis){
+    if(c.group !== last){ html += `<div class="group-title">${esc(c.groupName)}</div>`; last = c.group; }
+    const s = st(c.id);
+    html += `<div class="card" data-st="${esc(s.status||'')}" data-id="${esc(c.id)}">
+      <div class="top"><div><div class="name">${esc(c.fio)}</div>
+        <div class="meta">${esc(c.model)} · ${c.year ? c.year+' г.' : 'год не указан'} · +${esc(c.phone)}</div></div>
+        <span class="badge">В базе: ${esc(c.baseStatus)}</span></div>
+      <div class="todo">${esc(c.todo)}</div>
+      <details><summary>Текст сообщения (можно изменить)</summary>
+        <textarea data-act="text">${esc(textOf(c))}</textarea></details>
+      <div class="actions">
+        <a class="btn wa" data-act="wa" href="#" rel="noopener">WhatsApp</a>
+        <a class="btn" href="tel:+${esc(c.phone)}" data-act="call">Позвонить</a>
+      </div>
+      <div class="row2">
+        <select data-act="status">${STATUSES.map(x=>`<option value="${esc(x)}" ${x===(s.status||'')?'selected':''}>${esc(LABEL(x))}</option>`).join('')}</select>
+        <input data-act="comment" placeholder="Комментарий: пробег, цена, когда перезвонить" value="${esc(s.comment||'')}">
+      </div>
+      ${s.date ? `<div class="when">Последнее действие: ${fmt(s.date)}</div>` : ''}
+    </div>`;
+  }
+  $('list').innerHTML = html || '<p class="sub">Никого не найдено.</p>';
+}
+
+$('list').addEventListener('click', e => {
+  const a = e.target.closest('[data-act]'); if(!a) return;
+  const card = a.closest('.card'); const c = clients.find(x => x.id === card.dataset.id); const s = st(c.id);
+  if(a.dataset.act === 'wa'){
+    e.preventDefault();
+    window.open(`https://wa.me/${c.phone}?text=${encodeURIComponent(textOf(c))}`, '_blank', 'noopener');
+    if(!s.status){ s.status = 'Отправлено'; }
+    s.date = new Date().toISOString(); save(); render();
+  }
+  if(a.dataset.act === 'call'){ s.date = new Date().toISOString(); save(); }
+});
+$('list').addEventListener('change', e => {
+  const a = e.target.closest('[data-act]'); if(!a) return;
+  const c = clients.find(x => x.id === a.closest('.card').dataset.id); const s = st(c.id);
+  if(a.dataset.act === 'status'){ s.status = a.value; s.date = new Date().toISOString(); save(); render(); }
+  if(a.dataset.act === 'comment'){ s.comment = a.value; save(); }
+  if(a.dataset.act === 'text'){ s.text = a.value; save(); toast('Текст сохранён'); }
+});
+
+/* ---------- отчёт и перенос ---------- */
+function report(){
+  const lines = clients.map(c => { const s = st(c.id);
+    return `• ${c.fio} — ${c.model} ${c.year||''} — ${LABEL(s.status)}${s.comment ? ' — '+s.comment : ''}`; });
+  const n = s => clients.filter(c => (st(c.id).status||'')===s).length;
+  return `Выкуп Mazda — отчёт на ${new Date().toLocaleDateString('ru-RU')}\n`+
+    `Обработано: ${clients.filter(c=>st(c.id).status).length} из ${clients.length}\n`+
+    `Интерес/осмотр: ${n('Ответил — интересно')+n('Осмотр назначен')}, выкуплено: ${n('Выкуплено')}, отказ: ${n('Отказ')+n('Не актуально')+n('Год не подходит')}\n\n`+
+    lines.join('\n');
+}
+$('reportWa').onclick = () => window.open('https://wa.me/?text='+encodeURIComponent(report()), '_blank', 'noopener');
+$('reportCopy').onclick = async () => { try{ await navigator.clipboard.writeText(report()); toast('Отчёт скопирован'); }catch(e){ toast('Не удалось скопировать'); } };
+function download(name, text, type){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text],{type})); a.download = name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+$('csv').onclick = () => {
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const rows = [['Группа','ФИО','Модель','Год','Телефон','Статус в базе','Результат','Комментарий','Дата']]
+    .concat(clients.map(c => { const s = st(c.id); return [c.groupName,c.fio,c.model,c.year||'','+'+c.phone,c.baseStatus,LABEL(s.status),s.comment||'',fmt(s.date)]; }));
+  download(`vykup-mazda-${new Date().toISOString().slice(0,10)}.csv`, '﻿'+rows.map(r=>r.map(q).join(';')).join('\n'), 'text/csv');
+};
+$('backup').onclick = () => download(`statusy-mazda-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state), 'application/json');
+$('restore').onchange = async e => {
+  const f = e.target.files[0]; if(!f) return;
+  try{
+    const incoming = JSON.parse(await f.text()); let n = 0;
+    for(const [id,v] of Object.entries(incoming)){
+      if(!v || typeof v !== 'object') continue;
+      const cur = state[id];
+      if(!cur || !cur.date || (v.date && v.date > cur.date)){ state[id] = v; n++; }
+    }
+    save(); render(); toast(`Загружено: ${n}`);
+  }catch(err){ toast('Файл не подошёл'); }
+  e.target.value = '';
+};
+</script>
+</body>
+</html>
